@@ -14,6 +14,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 using TLib.Windows;
 namespace FuckZuoYeBang
 {
@@ -23,6 +26,13 @@ namespace FuckZuoYeBang
     public partial class WdMain : Window
     {
         int sleepMilliseconds = 500;
+        dynamic jsonStr;
+        int x1;
+        int y1;
+        int x2;
+        int y2;
+        int x3;
+        int y3;
         public WdMain()
         {
             InitializeComponent();
@@ -30,8 +40,14 @@ namespace FuckZuoYeBang
             hotKey.HotKeyPressed += HotKey_HotKeyPressed;
             Timer.Interval = TimeSpan.FromMilliseconds(500);
             Timer.Tick += Timer_Tick;
-
-            sleepMilliseconds = int.Parse(File.ReadAllText("config.txt"));
+            jsonStr = JValue.Parse(File.ReadAllText("config.json"));
+            sleepMilliseconds = jsonStr.sleepMilliseconds;
+            x1 = jsonStr.x1;
+            x2 = jsonStr.x2;
+            x3 = jsonStr.x3;
+            y1 = jsonStr.y1;
+            y2 = jsonStr.y2;
+            y3 = jsonStr.y3;
         }
 
         private void HotKey_HotKeyPressed(HotKey obj)
@@ -63,14 +79,17 @@ namespace FuckZuoYeBang
                     {
                         Console.WriteLine("cur status is "+isFucking);
                         if (!isFucking) { break; }
-                        MouseSimulation.MoveTo(new System.Drawing.Point(195, 228));//领取
+                        Console.WriteLine(1);
+                        Console.WriteLine(jsonStr.x1);
+                        MouseSimulation.MoveTo(new System.Drawing.Point(x1, y1));//领取
+                        Console.WriteLine(2);
                         MouseSimulation.Click(MouseButton.Left);
                         await Task.Delay(sleepMilliseconds);
                         //Thread.Sleep(sleepMilliseconds);
 
                         Console.WriteLine("cur status is " + isFucking);
                         if (!isFucking) { break; }
-                        MouseSimulation.MoveTo(new System.Drawing.Point(216, 702));//统计
+                        MouseSimulation.MoveTo(new System.Drawing.Point(x2, y2));//统计
                         MouseSimulation.Click(MouseButton.Left);
                         if (!isFucking) { break; }
                         await Task.Delay(sleepMilliseconds);
@@ -78,7 +97,7 @@ namespace FuckZuoYeBang
 
                         Console.WriteLine("cur status is " + isFucking);
                         if (!isFucking) { break; }
-                        MouseSimulation.MoveTo(new System.Drawing.Point(56, 692));//题目解答
+                        MouseSimulation.MoveTo(new System.Drawing.Point(x3, y3));//题目解答
                         MouseSimulation.Click(MouseButton.Left);
                         if (!isFucking) { break; }
                         await Task.Delay(sleepMilliseconds);
